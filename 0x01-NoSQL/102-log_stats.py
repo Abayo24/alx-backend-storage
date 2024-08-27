@@ -25,6 +25,9 @@ def nginx_count():
         method_count = collection.count_documents({"method": method})
         print(f'\tmethod {method}: {method_count}')
 
+    getStatus_count = collection.count_documents({"method": "GET", "path": "/status"})
+    print(f'{getStatus_count} status check')
+
     """top 10 of the most present IPs"""
     pipeline = [{
         "$group": {
@@ -39,10 +42,6 @@ def nginx_count():
     print('IPs:')
     for ip in ips:
         print(f'\t{ip["_id"]}: {ip["count"]}')
-
-
-    getStatus_count = collection.count_documents({"method": "GET", "path": "/status"})
-    print(f'{getStatus_count} status check')
 
 if __name__ == "__main__":
     nginx_count()
