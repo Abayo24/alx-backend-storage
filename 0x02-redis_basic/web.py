@@ -21,5 +21,5 @@ def get_page(url: str) -> str:
     page_content = response.text
 
     r.setex(f"cache:{url}", 10, page_content)
-    
+
     return page_content
