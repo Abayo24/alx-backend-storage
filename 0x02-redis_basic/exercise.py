@@ -4,6 +4,7 @@
 
 import uuid
 import redis
+import json
 from typing import Union, Callable, Optional
 from functools import wraps
 
@@ -19,6 +20,20 @@ def count_calls(method: Callable) -> Callable:
     return counter
 
 
+def call_history(method: Callable) -> Callable:
+    """store the history of inputs and outputs for a particular function"""
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """"""
+        input_keys = f'{method.__qualname__}:inputs'
+        output_keys = f'{method.__qualname__}:outputs'
+        self._redis.rpush(input_keys, json.dumps({"args": args, "kwargs": kwargs}))
+        result = method(self, *args, **kwargs)
+        self._redis.rpush(output_keys, json.dumps(result))
+        return result
+    return wrapper
+
+
 class Cache:
     """This a class called Cache"""
     def __init__(self):
@@ -28,7 +43,8 @@ class Cache:
         self._redis.flushdb()
 
 
-    @count_calls    
+    @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores data in Redis using random key and returns the key"""
         key = str(uuid.uuid4())
