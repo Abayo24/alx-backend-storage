@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
-"""Web caching module with URL access tracking."""
+"""Implementing an expiring web cache and tracker"""
 
 import redis
 import requests
 from typing import Callable
 from functools import wraps
+from exercise import count_calls
 
-# Initialize Redis client
+
 redis_client = redis.Redis()
 
 
-def count_calls(method: Callable) -> Callable:
-    """Decorator to count how many times a method is called."""
-    @wraps(method)
-    def wrapper(url: str) -> str:
-        """Wrapper function to increment call count."""
-        key = f"count:{url}"
-        redis_client.incr(key)
-        return method(url)
-    return wrapper
-
-
 def cache_result(expiration: int = 10) -> Callable:
-    """Decorator to cache the result of a function in Redis."""
+    """Decorator to cache the result of a function in redis."""
     def decorator(method: Callable) -> Callable:
         @wraps(method)
         def wrapper(url: str) -> str:
@@ -38,7 +28,7 @@ def cache_result(expiration: int = 10) -> Callable:
     return decorator
 
 
-@count_calls
+@count_calls  # Using the imported count_calls decorator
 @cache_result(expiration=10)
 def get_page(url: str) -> str:
     """Fetch the HTML content of a URL and cache it."""
