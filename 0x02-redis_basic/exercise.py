@@ -23,14 +23,14 @@ def count_calls(method: Callable) -> Callable:
 def call_history(method: Callable) -> Callable:
     """store the history of inputs and outputs for a particular function"""
     @wraps(method)
-    def wrapper(self, *args, **kwargs) -> Any:
+    def wrapper(self, *args)
         """store the history of inputs and outputs for a particular function"""
         input_keys = f'{method.__qualname__}:inputs'
         output_keys = f'{method.__qualname__}:outputs'
-        self._redis.rpush(input_keys, json.dumps({"args": args, "kwargs": kwargs}))
-        result = method(self, *args, **kwargs)
-        self._redis.rpush(output_keys, json.dumps(result))
-        return result
+        self._redis.rpush(input_keys, str(args))
+        output = method(self, *args)
+        self._redis.rpush(output_keys, str(output))
+        return output
     return wrapper
 
 
