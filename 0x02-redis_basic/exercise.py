@@ -5,7 +5,7 @@
 import uuid
 import redis
 import json
-from typing import Union, Callable, Optional, Any
+from typing import Union, Callable, Optional
 from functools import wraps
 
 
@@ -34,7 +34,7 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-def replay(self):
+def replay(method: Callable):
     """display the history of calls of a particular function"""
     redis = method.__self__._redis
     input_keys = f'{method.__qualname__}:inputs'
