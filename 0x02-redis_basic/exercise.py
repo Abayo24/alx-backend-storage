@@ -5,7 +5,7 @@
 import uuid
 import redis
 import json
-from typing import Union, Callable, Optional
+from typing import Union, Callable, Optional, Any
 from functools import wraps
 
 
@@ -23,7 +23,7 @@ def count_calls(method: Callable) -> Callable:
 def call_history(method: Callable) -> Callable:
     """store the history of inputs and outputs for a particular function"""
     @wraps(method)
-    def wrapper(self, *args, **kwargs):
+    def wrapper(self, *args, **kwargs) -> Any:
         """store the history of inputs and outputs for a particular function"""
         input_keys = f'{method.__qualname__}:inputs'
         output_keys = f'{method.__qualname__}:outputs'
