@@ -34,7 +34,6 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-
 def replay(self):
     """display the history of calls of a particular function"""
     redis = method.__self__._redis
@@ -60,7 +59,6 @@ class Cache:
 
         self._redis.flushdb()
 
-
     @count_calls
     @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
@@ -69,9 +67,11 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Optional[Callable] = None) -> Union[bytes, str, int, float]:
+    def get(self, key: str, fn: Optional[Callable] =
+            None) -> Union[bytes, str, int, float]:
         """
-        takes key str argument and fn callaable optional argument used to covert
+        takes key str argument and fn callable
+        optional argument used to covert
         data to desired format
         """
         data = self._redis.get(key)
@@ -79,11 +79,9 @@ class Cache:
             return fn(data)
         return data
 
-
     def get_str() -> Optional[str]:
         """Retrieve the data as a UTF-8 string"""
         return self.get(key, fn=lambda x: x.decode('utf-8'))
-
 
     def get_int() -> Optional[int]:
         """Retrieves data as an integer"""
